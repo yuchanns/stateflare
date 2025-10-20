@@ -168,13 +168,17 @@ app.get('/track.js', (c) => {
 app.post('/track', async (c) => {
   try {
     // Get visitor IP (Cloudflare provides this)
-    let ip = c.req.header('CF-Connecting-IP') || 
-             c.req.header('X-Forwarded-For') || 
-             'unknown';
+    let ip = c.req.header('CF-Connecting-IP');
     
-    // If X-Forwarded-For contains multiple IPs, take the first one (client IP)
-    if (ip.includes(',')) {
-      ip = ip.split(',')[0].trim();
+    if (!ip) {
+      // Fallback to X-Forwarded-For if CF-Connecting-IP is not available
+      const xForwardedFor = c.req.header('X-Forwarded-For');
+      if (xForwardedFor) {
+        // X-Forwarded-For may contain multiple IPs, take the first one (client IP)
+        ip = xForwardedFor.split(',')[0].trim();
+      } else {
+        ip = 'unknown';
+      }
     }
     
     // Get User-Agent
