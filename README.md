@@ -4,6 +4,8 @@ A lightweight visitor counter that runs on your own Cloudflare Workers with D1 d
 
 一个基于 Cloudflare Workers 和 D1 数据库的轻量级访客统计工具。
 
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/yuchanns/stateflare)
+
 [English](#english) | [中文](#中文)
 
 ---
@@ -141,6 +143,8 @@ MIT License
 ---
 
 ## 中文
+
+[![部署到 Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/yuchanns/stateflare)
 
 ### 功能特点
 
