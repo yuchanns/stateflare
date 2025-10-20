@@ -14,13 +14,23 @@ async function generateVisitorHash(ip: string, userAgent: string): Promise<strin
 }
 
 // Extract site origin from referrer
+// For URLs like example.com/path/subpath, extracts example.com/path
+// For URLs like example.com, extracts example.com
 function getSiteOrigin(referrer: string): string | null {
   if (!referrer) return null;
   
   try {
     const url = new URL(referrer);
-    // Get the origin and pathname up to the root
-    return `${url.origin}${url.pathname}`.replace(/\/$/, '');
+    const pathSegments = url.pathname.split('/').filter(seg => seg.length > 0);
+    
+    // If there are path segments, include only the first one (base path)
+    // This handles cases like github.io/username/repo -> tracks at github.io/username
+    if (pathSegments.length > 0) {
+      return `${url.origin}/${pathSegments[0]}`;
+    }
+    
+    // No path segments, just use origin
+    return url.origin;
   } catch (e) {
     return null;
   }
