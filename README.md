@@ -118,6 +118,14 @@ For a website deployed at `xxx.github.io/yyy`:
 - No personal information is stored
 - Only aggregated statistics are maintained
 
+### Cross-Origin Policy Support
+
+Stateflare fully supports websites with strict cross-origin policies (COOP/COEP). The tracking script (`track.js`) includes the necessary headers:
+- `Cross-Origin-Resource-Policy: cross-origin` - Allows the script to be loaded by any website
+- `Access-Control-Allow-Origin: *` - CORS support for cross-origin requests
+
+This ensures compatibility with websites using Cross-Origin Embedder Policy (COEP) and Cross-Origin Opener Policy (COOP) for enhanced security.
+
 ### Documentation
 
 - [Deployment Guide](DEPLOYMENT.md)
@@ -251,6 +259,14 @@ curl "https://你的-worker.workers.dev/stats?site=https://example.com/blog"
 - 不使用 Cookie 或 localStorage
 - 不存储个人信息
 - 仅维护聚合统计信息
+
+### 跨源策略支持
+
+Stateflare 完全支持设置了严格跨源策略（COOP/COEP）的网站。跟踪脚本（`track.js`）包含必要的响应头：
+- `Cross-Origin-Resource-Policy: cross-origin` - 允许任何网站加载该脚本
+- `Access-Control-Allow-Origin: *` - 支持跨源请求的 CORS
+
+这确保了与使用跨源嵌入器策略（COEP）和跨源开启器策略（COOP）以增强安全性的网站的兼容性。
 
 ### 文档
 
