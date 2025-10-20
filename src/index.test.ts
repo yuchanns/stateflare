@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import app from './index';
 
 // Test the site origin extraction logic
 function getSiteOrigin(referrer: string): string | null {
@@ -84,8 +85,6 @@ describe('generateVisitorHash', () => {
 });
 
 // Test COOP/COEP headers
-import app from './index';
-
 describe('COOP/COEP Support', () => {
   it('should include Cross-Origin-Resource-Policy header for track.js', async () => {
     const res = await app.request('/track.js');
