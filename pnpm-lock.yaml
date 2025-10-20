@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       hono:
-        specifier: ^4.6.14
+        specifier: ^4.10.1
         version: 4.10.1
     devDependencies:
       '@cloudflare/workers-types':

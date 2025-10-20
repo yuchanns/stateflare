@@ -46,3 +46,39 @@ describe('getSiteOrigin', () => {
     expect(getSiteOrigin('https://example.com/blog/post?id=123#comments')).toBe('https://example.com/blog');
   });
 });
+
+// Test visitor hash generation
+async function generateVisitorHash(ip: string, userAgent: string): Promise<string> {
+  const data = `${ip}:${userAgent}`;
+  const encoder = new TextEncoder();
+  const dataBuffer = encoder.encode(data);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
+describe('generateVisitorHash', () => {
+  it('should generate consistent hashes for same input', async () => {
+    const hash1 = await generateVisitorHash('192.168.1.1', 'Mozilla/5.0');
+    const hash2 = await generateVisitorHash('192.168.1.1', 'Mozilla/5.0');
+    expect(hash1).toBe(hash2);
+  });
+
+  it('should generate different hashes for different IPs', async () => {
+    const hash1 = await generateVisitorHash('192.168.1.1', 'Mozilla/5.0');
+    const hash2 = await generateVisitorHash('192.168.1.2', 'Mozilla/5.0');
+    expect(hash1).not.toBe(hash2);
+  });
+
+  it('should generate different hashes for different user agents', async () => {
+    const hash1 = await generateVisitorHash('192.168.1.1', 'Mozilla/5.0');
+    const hash2 = await generateVisitorHash('192.168.1.1', 'Chrome/90.0');
+    expect(hash1).not.toBe(hash2);
+  });
+
+  it('should generate 64-character hex string', async () => {
+    const hash = await generateVisitorHash('192.168.1.1', 'Mozilla/5.0');
+    expect(hash).toMatch(/^[0-9a-f]{64}$/);
+  });
+});

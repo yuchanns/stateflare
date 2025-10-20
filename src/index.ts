@@ -5,6 +5,17 @@ export interface Env {
   DB: D1Database;
 }
 
+// Generate a hash from IP and User-Agent for visitor identification
+async function generateVisitorHash(ip: string, userAgent: string): Promise<string> {
+  const data = `${ip}:${userAgent}`;
+  const encoder = new TextEncoder();
+  const dataBuffer = encoder.encode(data);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
 // Extract site origin from referrer
 // For URLs like example.com/path/subpath, extracts example.com/path
 // For URLs like example.com, extracts example.com
@@ -28,34 +39,54 @@ function getSiteOrigin(referrer: string): string | null {
   }
 }
 
-// Update UV/PV stats without storing visitor data
-async function updateStats(db: D1Database, siteOrigin: string): Promise<{ uv: number; pv: number }> {
+// Track visitor and update UV/PV stats
+async function trackVisitor(db: D1Database, siteOrigin: string, visitorHash: string): Promise<{ uv: number; pv: number }> {
   try {
-    // Update or create site stats - just increment PV
+    // Check if visitor exists for this site
+    const visitor = await db.prepare(
+      'SELECT * FROM visitors WHERE site_origin = ? AND visitor_hash = ?'
+    ).bind(siteOrigin, visitorHash).first();
+
+    let isNewVisitor = false;
+
+    if (!visitor) {
+      // New visitor - insert
+      await db.prepare(
+        'INSERT INTO visitors (site_origin, visitor_hash, visit_count) VALUES (?, ?, 1)'
+      ).bind(siteOrigin, visitorHash).run();
+      isNewVisitor = true;
+    } else {
+      // Existing visitor - update visit count and last visit
+      await db.prepare(
+        'UPDATE visitors SET visit_count = visit_count + 1, last_visit = strftime(\'%s\', \'now\') WHERE site_origin = ? AND visitor_hash = ?'
+      ).bind(siteOrigin, visitorHash).run();
+    }
+
+    // Update or create site stats
     const siteStats = await db.prepare(
       'SELECT * FROM site_stats WHERE site_origin = ?'
     ).bind(siteOrigin).first();
 
     if (!siteStats) {
-      // Create new site stats - first visit counts as both UV and PV
+      // Create new site stats
       await db.prepare(
         'INSERT INTO site_stats (site_origin, uv, pv) VALUES (?, 1, 1)'
       ).bind(siteOrigin).run();
       return { uv: 1, pv: 1 };
     } else {
-      // Update existing stats - only increment PV
-      // UV stays the same since we're not tracking individual visitors
+      // Update existing stats
+      const uvIncrement = isNewVisitor ? 1 : 0;
       await db.prepare(
-        'UPDATE site_stats SET pv = pv + 1, updated_at = strftime(\'%s\', \'now\') WHERE site_origin = ?'
-      ).bind(siteOrigin).run();
+        'UPDATE site_stats SET uv = uv + ?, pv = pv + 1, updated_at = strftime(\'%s\', \'now\') WHERE site_origin = ?'
+      ).bind(uvIncrement, siteOrigin).run();
 
       return {
-        uv: siteStats.uv as number,
+        uv: (siteStats.uv as number) + uvIncrement,
         pv: (siteStats.pv as number) + 1
       };
     }
   } catch (error) {
-    console.error('Error updating stats:', error);
+    console.error('Error tracking visitor:', error);
     throw error;
   }
 }
@@ -135,6 +166,14 @@ app.get('/track.js', (c) => {
 // Handle tracking endpoint
 app.post('/track', async (c) => {
   try {
+    // Get visitor IP (Cloudflare provides this)
+    const ip = c.req.header('CF-Connecting-IP') || 
+               c.req.header('X-Forwarded-For') || 
+               'unknown';
+    
+    // Get User-Agent
+    const userAgent = c.req.header('User-Agent') || 'unknown';
+    
     // Get referrer from request body or header
     let referrer = c.req.header('Referer') || c.req.header('Referrer');
     
@@ -157,8 +196,11 @@ app.post('/track', async (c) => {
       return c.json({ error: 'Invalid referrer' }, 400);
     }
 
-    // Update stats (no visitor tracking)
-    const stats = await updateStats(c.env.DB, siteOrigin);
+    // Generate visitor hash
+    const visitorHash = await generateVisitorHash(ip, userAgent);
+
+    // Track the visitor
+    const stats = await trackVisitor(c.env.DB, siteOrigin, visitorHash);
 
     return c.json(stats);
   } catch (error) {
