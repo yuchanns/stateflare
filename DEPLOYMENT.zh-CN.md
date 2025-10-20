@@ -5,7 +5,7 @@
 ## 前置要求
 
 1. Cloudflare 账号（免费版即可）
-2. Node.js（v16 或更高版本）和 npm
+2. Node.js（v16 或更高版本）和 pnpm
 3. 安装 Git
 
 ## 分步部署指南
@@ -13,7 +13,7 @@
 ### 1. 安装 Wrangler CLI
 
 ```bash
-npm install -g wrangler
+pnpm install -g wrangler
 ```
 
 ### 2. 克隆并设置项目
@@ -21,7 +21,7 @@ npm install -g wrangler
 ```bash
 git clone https://github.com/yuchanns/stateflare.git
 cd stateflare
-npm install
+pnpm install
 ```
 
 ### 3. 登录 Cloudflare
@@ -103,7 +103,7 @@ https://stateflare.your-subdomain.workers.dev/track.js
 ### 启动开发服务器
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 对于本地开发，您需要使用本地 D1 数据库：
@@ -240,7 +240,7 @@ Cloudflare Workers 免费版包含：
 
 ```bash
 git pull
-npm install
+pnpm install
 wrangler deploy
 ```
 

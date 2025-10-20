@@ -26,8 +26,8 @@ A lightweight visitor counter that runs on your own Cloudflare Workers with D1 d
 #### 1. Prerequisites
 
 - A Cloudflare account
-- Node.js and npm installed
-- Wrangler CLI installed: `npm install -g wrangler`
+- Node.js and pnpm installed
+- Wrangler CLI installed: `pnpm install -g wrangler`
 
 #### 2. Setup
 
@@ -37,7 +37,7 @@ git clone https://github.com/yuchanns/stateflare.git
 cd stateflare
 
 # Install dependencies
-npm install
+pnpm install
 
 # Login to Cloudflare
 wrangler login
@@ -135,18 +135,18 @@ This ensures the tracking script can be embedded in websites using Cross-Origin 
 
 ```bash
 # Run locally with development server
-npm run dev
+pnpm run dev
 
 # Run tests
-npm test
+pnpm test
 
 # Deploy to production
-npm run deploy
+pnpm run deploy
 ```
 
 ### License
 
-MIT License
+Apache-2.0 License
 
 ---
 
@@ -168,8 +168,8 @@ MIT License
 #### 1. 前置要求
 
 - Cloudflare 账号
-- 安装 Node.js 和 npm
-- 安装 Wrangler CLI：`npm install -g wrangler`
+- 安装 Node.js 和 pnpm
+- 安装 Wrangler CLI：`pnpm install -g wrangler`
 
 #### 2. 设置
 
@@ -179,7 +179,7 @@ git clone https://github.com/yuchanns/stateflare.git
 cd stateflare
 
 # 安装依赖
-npm install
+pnpm install
 
 # 登录 Cloudflare
 wrangler login
@@ -277,15 +277,15 @@ Stateflare 支持被设置了严格跨源策略（COOP/COEP）的网站加载。
 
 ```bash
 # 使用开发服务器本地运行
-npm run dev
+pnpm run dev
 
 # 运行测试
-npm test
+pnpm test
 
 # 部署到生产环境
-npm run deploy
+pnpm run deploy
 ```
 
 ### 许可证
 
-MIT License
+Apache-2.0 License
