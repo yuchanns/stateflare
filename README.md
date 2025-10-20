@@ -76,6 +76,8 @@ Internal endpoint used by the tracking script to record visits.
 #### GET /stats?site=<site_origin>
 Query statistics for a specific site origin.
 
+**Note**: The `site` parameter should match the extracted site origin (origin + first path segment). For example, if your site is at `example.com/blog`, use `https://example.com/blog`.
+
 **Example:**
 ```bash
 curl "https://your-worker.workers.dev/stats?site=https://example.com/blog"
@@ -205,6 +207,8 @@ wrangler deploy
 
 #### GET /stats?site=<站点来源>
 查询特定站点来源的统计信息。
+
+**注意**：`site` 参数应匹配提取的站点来源（域名 + 第一个路径段）。例如，如果您的站点在 `example.com/blog`，则使用 `https://example.com/blog`。
 
 **示例：**
 ```bash
