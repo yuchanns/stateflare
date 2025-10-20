@@ -1,0 +1,8 @@
+name = "stateflare"
+main = "src/index.ts"
+compatibility_date = "2025-10-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "stateflare-db"
+database_id = "your-database-id-here"
