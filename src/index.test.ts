@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import app from './index';
 
 // Test the site origin extraction logic
 function getSiteOrigin(referrer: string): string | null {
@@ -80,5 +81,26 @@ describe('generateVisitorHash', () => {
   it('should generate 64-character hex string', async () => {
     const hash = await generateVisitorHash('192.168.1.1', 'Mozilla/5.0');
     expect(hash).toMatch(/^[0-9a-f]{64}$/);
+  });
+});
+
+// Test COOP/COEP headers
+describe('COOP/COEP Support', () => {
+  it('should include Cross-Origin-Resource-Policy header for track.js', async () => {
+    const res = await app.request('/track.js');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Cross-Origin-Resource-Policy')).toBe('cross-origin');
+  });
+
+  it('should include CORS headers for track.js', async () => {
+    const res = await app.request('/track.js');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
+  });
+
+  it('should include correct Content-Type for track.js', async () => {
+    const res = await app.request('/track.js');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Content-Type')).toContain('application/javascript');
   });
 });

@@ -160,6 +160,7 @@ app.get('/track.js', (c) => {
   return c.text(script, 200, {
     'Content-Type': 'application/javascript',
     'Cache-Control': 'public, max-age=3600',
+    'Cross-Origin-Resource-Policy': 'cross-origin',
   });
 });
 
