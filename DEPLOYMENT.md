@@ -5,7 +5,7 @@ This guide will help you deploy Stateflare to Cloudflare Workers.
 ## Prerequisites
 
 1. A Cloudflare account (free tier is sufficient)
-2. Node.js (v16 or higher) and npm installed
+2. Node.js (v16 or higher) and pnpm installed
 3. Git installed
 
 ## Step-by-Step Deployment
@@ -13,7 +13,7 @@ This guide will help you deploy Stateflare to Cloudflare Workers.
 ### 1. Install Wrangler CLI
 
 ```bash
-npm install -g wrangler
+pnpm install -g wrangler
 ```
 
 ### 2. Clone and Setup
@@ -21,7 +21,7 @@ npm install -g wrangler
 ```bash
 git clone https://github.com/yuchanns/stateflare.git
 cd stateflare
-npm install
+pnpm install
 ```
 
 ### 3. Login to Cloudflare
@@ -103,7 +103,7 @@ This should return the JavaScript tracking code.
 ### Start Development Server
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 For local development, you'll need to use a local D1 database:
@@ -178,7 +178,7 @@ To update your deployment:
 
 ```bash
 git pull
-npm install
+pnpm install
 wrangler deploy
 ```
 
