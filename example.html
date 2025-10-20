@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stateflare Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .counter {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .counter label {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0 10px;
+    }
+    code {
+      background-color: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>Stateflare - Visitor Counter Example</h1>
+  
+  <div class="counter">
+    <label id="uv_label">UV</label> /
+    <label id="pv_label">PV</label>
+  </div>
+
+  <h2>Usage</h2>
+  <p>Add the following code to your website:</p>
+  
+  <pre><code>&lt;script defer src="https://your-worker.workers.dev/track.js"&gt;&lt;/script&gt;
+&lt;label id="uv_label"&gt;UV&lt;/label&gt; /
+&lt;label id="pv_label"&gt;PV&lt;/label&gt;</code></pre>
+
+  <h2>Description</h2>
+  <ul>
+    <li><strong>PV (Page Views):</strong> Total number of page visits to your site (increments on each visit)</li>
+    <li><strong>UV (Unique Visitors):</strong> Number of unique visitors based on IP + User-Agent hash (permanent deduplication)</li>
+  </ul>
+
+  <h3>Features</h3>
+  <ul>
+    <li>Automatic site tracking based on referrer URL</li>
+    <li>Multi-site support with separate counters for each origin</li>
+    <li>Persistent storage using Cloudflare D1</li>
+    <li>Privacy-focused: uses hashed IP + User-Agent for identification</li>
+    <li>No cookies or localStorage required</li>
+  </ul>
+
+  <!-- Replace the URL below with your deployed worker URL -->
+  <script defer src="https://your-worker.workers.dev/track.js"></script>
+</body>
+</html>
