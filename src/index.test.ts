@@ -105,6 +105,55 @@ describe('COOP/COEP Support', () => {
   });
 });
 
+// Test CORS preflight caching
+describe('CORS Preflight Caching', () => {
+  it('should handle OPTIONS preflight request with maxAge header', async () => {
+    const res = await app.request('/track', {
+      method: 'OPTIONS',
+      headers: {
+        'Origin': 'https://example.com',
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'content-type'
+      }
+    });
+    
+    expect(res.status).toBe(204);
+    expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
+    expect(res.headers.get('Access-Control-Max-Age')).toBe('86400');
+    expect(res.headers.get('Access-Control-Allow-Methods')).toContain('POST');
+    expect(res.headers.get('Access-Control-Allow-Headers')).toContain('content-type');
+  });
+
+  it('should handle OPTIONS preflight request for stats endpoint', async () => {
+    const res = await app.request('/stats', {
+      method: 'OPTIONS',
+      headers: {
+        'Origin': 'https://example.com',
+        'Access-Control-Request-Method': 'GET'
+      }
+    });
+    
+    expect(res.status).toBe(204);
+    expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
+    expect(res.headers.get('Access-Control-Max-Age')).toBe('86400');
+    expect(res.headers.get('Access-Control-Allow-Methods')).toContain('GET');
+  });
+
+  it('should handle OPTIONS preflight request for track.js endpoint', async () => {
+    const res = await app.request('/track.js', {
+      method: 'OPTIONS',
+      headers: {
+        'Origin': 'https://example.com',
+        'Access-Control-Request-Method': 'GET'
+      }
+    });
+    
+    expect(res.status).toBe(204);
+    expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
+    expect(res.headers.get('Access-Control-Max-Age')).toBe('86400');
+  });
+});
+
 // Test tracking script behavior
 describe('Track Script Generation', () => {
   it('should use window.location.href for site identification', async () => {
