@@ -78,11 +78,11 @@ Internal endpoint used by the tracking script to record visits.
 #### GET /stats?site=<site_origin>
 Query statistics for a specific site origin.
 
-**Note**: The `site` parameter should match the extracted site origin (origin + first path segment). For example, if your site is at `example.com/blog`, use `https://example.com/blog`.
+**Note**: The `site` parameter should match the extracted site origin (origin + first path segment with trailing slash). For example, if your site is at `example.com/blog`, use `https://example.com/blog/`.
 
 **Example:**
 ```bash
-curl "https://your-worker.workers.dev/stats?site=https://example.com/blog"
+curl "https://your-worker.workers.dev/stats?site=https://example.com/blog/"
 ```
 
 **Response:**
@@ -107,7 +107,9 @@ curl "https://your-worker.workers.dev/stats?site=https://example.com/blog"
 ### Site Origin Tracking
 
 For a website deployed at `xxx.github.io/yyy`:
-- All pages under this path (`xxx.github.io/yyy/zzz`, `xxx.github.io/yyy/aaa`) will be tracked under the same origin: `xxx.github.io/yyy`
+- All pages under this path (`xxx.github.io/yyy/zzz`, `xxx.github.io/yyy/aaa`) will be tracked under the same origin: `xxx.github.io/yyy/`
+- Both `xxx.github.io/yyy` and `xxx.github.io/yyy/` are normalized to `xxx.github.io/yyy/` (with trailing slash)
+- This handles redirect scenarios where accessing `xxx.github.io/yyy` redirects to `xxx.github.io/yyy/`
 - UV and PV counters are aggregated at the origin level
 - Multiple sites can use the same worker, each maintaining separate counters
 
@@ -220,11 +222,11 @@ wrangler deploy
 #### GET /stats?site=<站点来源>
 查询特定站点来源的统计信息。
 
-**注意**：`site` 参数应匹配提取的站点来源（域名 + 第一个路径段）。例如，如果您的站点在 `example.com/blog`，则使用 `https://example.com/blog`。
+**注意**：`site` 参数应匹配提取的站点来源（域名 + 第一个路径段及尾部斜杠）。例如，如果您的站点在 `example.com/blog`，则使用 `https://example.com/blog/`。
 
 **示例：**
 ```bash
-curl "https://你的-worker.workers.dev/stats?site=https://example.com/blog"
+curl "https://你的-worker.workers.dev/stats?site=https://example.com/blog/"
 ```
 
 **响应：**
@@ -249,7 +251,9 @@ curl "https://你的-worker.workers.dev/stats?site=https://example.com/blog"
 ### 站点来源跟踪
 
 对于部署在 `xxx.github.io/yyy` 的网站：
-- 该路径下的所有页面（`xxx.github.io/yyy/zzz`、`xxx.github.io/yyy/aaa`）都将被统计到同一来源：`xxx.github.io/yyy`
+- 该路径下的所有页面（`xxx.github.io/yyy/zzz`、`xxx.github.io/yyy/aaa`）都将被统计到同一来源：`xxx.github.io/yyy/`
+- `xxx.github.io/yyy` 和 `xxx.github.io/yyy/` 都会被标准化为 `xxx.github.io/yyy/`（带尾部斜杠）
+- 这可以处理 `xxx.github.io/yyy` 重定向到 `xxx.github.io/yyy/` 的场景
 - UV 和 PV 计数器在来源级别聚合
 - 多个站点可以使用同一个 Worker，每个站点维护独立的计数器
 
