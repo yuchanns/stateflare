@@ -104,3 +104,23 @@ describe('COOP/COEP Support', () => {
     expect(res.headers.get('Content-Type')).toContain('application/javascript');
   });
 });
+
+// Test tracking script behavior
+describe('Track Script Generation', () => {
+  it('should use window.location.href for site identification', async () => {
+    const res = await app.request('/track.js');
+    const script = await res.text();
+    
+    // Verify the script uses window.location.href instead of document.referrer
+    expect(script).toContain('window.location.href');
+    expect(script).toContain('var siteUrl = window.location.href');
+  });
+
+  it('should send siteUrl in the referrer field to maintain API compatibility', async () => {
+    const res = await app.request('/track.js');
+    const script = await res.text();
+    
+    // Verify the script sends the siteUrl in the referrer field
+    expect(script).toContain('referrer: siteUrl');
+  });
+});
