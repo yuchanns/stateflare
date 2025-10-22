@@ -144,8 +144,12 @@ function generateTrackScript(workerUrl: string): string {
 
 const app = new Hono<{ Bindings: Env }>();
 
-// Enable CORS for all routes
-app.use('*', cors());
+// Enable CORS for all routes with preflight caching
+// maxAge: 86400 (24 hours) - browsers will cache preflight responses for 24 hours
+app.use('*', cors({
+  origin: '*',
+  maxAge: 86400,
+}));
 
 // Root endpoint
 app.get('/', (c) => {
