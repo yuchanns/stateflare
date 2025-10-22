@@ -108,7 +108,7 @@ async function getStats(db: D1Database, siteOrigin: string): Promise<{ uv: numbe
 // Generate track.js script
 function generateTrackScript(workerUrl: string): string {
   return `(function() {
-  var referrer = document.referrer || window.location.href;
+  var siteUrl = window.location.href;
   var trackUrl = '${workerUrl}/track';
   
   // Send tracking request
@@ -118,7 +118,7 @@ function generateTrackScript(workerUrl: string): string {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      referrer: referrer
+      referrer: siteUrl
     })
   })
   .then(function(response) {
